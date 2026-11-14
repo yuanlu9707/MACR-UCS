@@ -71,7 +71,6 @@ CRGC and RCPE are both enabled by default in the current configuration. Importan
 | `dataset` | `roma` | `NCSU` or `roma` |
 | `poi_num` | `80`  | Parser default; Roma automatically selects 80 users |
 | `uav_num` | `5`   | Number of UAVs |
-| `max_episode_step` | `120` | Episode length |
 | `--aoith n` | `30` | AoI threshold, measured in time slots |
 | `--txth n` | `1` | Transmission-rate threshold, measured in Mbps |
 | `--update_num n` | `10` | Number of antennas; a UAV can serve at most `n` users in one time slot |
