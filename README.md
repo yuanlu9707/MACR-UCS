@@ -85,7 +85,7 @@ Outputs are written to **`runs/<group>/<timestamp-and-settings>/`** at the repos
 
 ```text
 EXPERIMENT_DIRECTORY/
-├── Models/            # Best actor model
+├── Models/            # Best network model
 ├── params.json        # Parameters used for this experiment
 ├── train_saved_trajs/ # Best UAV trajectories from training episodes
 ├── train_output.txt   # Metrics associated with the best training model
