@@ -105,7 +105,7 @@ python main_DPPO.py --test --dataset NCSU --device cuda:0 --checkpoint ../runs/N
 
 Replace `EXPERIMENT_DIRECTORY` with your saved run folder and use the same dataset and model settings as training. Results are saved to `<checkpoint>/test/`.
 
-## Visualization
+## 🗺️ Visualization
 
 Generate an HTML visualization of the saved UAV trajectories from `source_code`:
 
@@ -113,15 +113,9 @@ Generate an HTML visualization of the saved UAV trajectories from `source_code`:
 python tools/post/vis.py --output_dir ../runs/NCSU/EXPERIMENT_DIRECTORY
 ```
 
-Example UAV trajectories on the NCSU dataset, with each colored path representing one UAV:
-
-![UAV trajectories on the NCSU dataset](docs/images/uav-trajectories.png)
-
 ## 👏 Reference
 
-Related implementations and documentation consulted for this repository:
-
-- MetaCS: https://github.com/yuxiaooye/DRL_dyna_AoI.
+Thanks for:  MetaCS: https://github.com/yuxiaooye/DRL_dyna_AoI.
 
 ## 📜 Acknowledgement
 
