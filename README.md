@@ -4,22 +4,8 @@ MACR-UCS for **"Cross-Scale Reconstruction-Guided Communication and Regional Cau
 
 ## 📄 Description
 
-MACR-UCS is a multi-agent reinforcement learning framework for cooperative UAV data collection under partial observability. UAVs coordinate their movement and service decisions to improve information freshness and collection efficiency while accounting for energy consumption.
+Unmanned aerial vehicles (UAV) crowdsourcing (UCS) has emerged as a promising paradigm for spatio-temporal data collection. However, in time-sensitive data collection involving mobile users, existing methods struggle to obtain comprehensive global spatio-temporal task information under partial observability and coordinate multi-UAV exploration, leading to insufficient collaboration, redundant coverage, and reduced data freshness. Therefore, we propose a novel multi-agent deep reinforcement learning framework, termed MACR-UCS, to improve composite sensing efficiency in UCS tasks. Specifically, we first propose a cross-scale reconstruction-guided communication (CRGC) mechanism that reconstructs global spatio-temporal task states at microscopic entity and macroscopic region scales by integrating incomplete local observations from multiple UAVs. Bidirectional micro-macro representation alignment and cross-scale state consistency constraints enhance cross-scale semantic relationships and reconstruction consistency. CRGC further generates personalized messages to improve multi-UAV collaborative decision-making. Second, we propose a regional causal priority-guided exploration (RCPE) mechanism that estimates regional state novelty via semantic quantization and Hash-Count and determines regional causal exploration priorities through counterfactual interventions and future return distribution modeling. RCPE combines both to construct an intrinsic reward, guiding task-value-aware collaborative exploration to reduce redundant coverage and regional service imbalance. Experimental results on the NCSU and Roma datasets demonstrate that MACR-UCS outperforms seven baseline methods.
 
-The framework combines two modules with an IPPO actor-critic backbone:
-
-- **CRGC — Cross-Scale Reconstruction-Guided Communication:** fuses UAV observations into microscopic entity inputs and macroscopic regional inputs, processes observation histories with GRUs and spatial attention, and exchanges information through a cross-scale Transformer. Reconstruction, physical consistency, and bidirectional alignment objectives support representation learning. Reconstructed information generates personalized, distance-aware messages for each UAV.
-- **RCPE — Regional Causal Priority-Guided Exploration:** learns a distribution over short-horizon extrinsic team returns, evaluates regional temporal counterfactual interventions, and combines regional priorities with count-based novelty to produce a training-time intrinsic reward. Reported episode rewards exclude this intrinsic bonus.
-
-Two datasets are included: **NCSU** (48 users) and **roma** (80 trajectories from the Roma taxi dataset).
-
-The reported **CSE** metric is
-
-\[
-\mathrm{CSE}=\frac{S_{\mathrm{AoI}}\,S_{\mathrm{collection}}\,S_{\mathrm{data}}}{E_{\mathrm{total}}/(U\times10^6)},
-\]
-
-where the numerator contains AoI satisfaction, collection ratio, and the code's AoI-derived data satisfaction ratio. The denominator is average energy consumption per UAV in MJ.
 
 ```text
 MACR-UCS/
@@ -88,39 +74,48 @@ CRGC and RCPE are both enabled by default in the current configuration. Importan
 | `n_iter` | `5000` | Training iterations |
 | `max_episode_step` | `120` | Episode length |
 | `agent_field` | `500` | Observation distance |
+| `--aoith n` | `30` | AoI threshold, measured in time slots |
+| `--txth n` | `1` | Transmission-rate threshold, measured in Mbps |
+| `--update_num n` | `10` | Number of antennas; a UAV can serve at most `n` users in one time slot |
 
 
 
 
 Outputs are written to **`runs/<group>/<timestamp-and-settings>/`** at the repository root. Depending on training progress, an experiment directory contains:
 
-- `params.json`: environment and command-line settings.
-- `Models/best_actor.pt`: best training-reward actor, including its CRGC parameters.
-- `Models/RCPE_*.pt`: periodically saved exploration-module states.
-- `episode_reward_threads.csv`, `episode_CSE_threads.csv`: per-thread episode metrics.
-- `train_output.txt`, `test_output.txt`, trajectory archives, HTML visualizations, and TensorBoard events.
+```text
+EXPERIMENT_DIRECTORY/
+├── Models/            # Best actor model
+├── params.json        # Parameters used for this experiment
+├── train_saved_trajs/ # Best UAV trajectories from training episodes
+├── train_output.txt   # Metrics associated with the best training model
+├── test_output.txt    # Evaluation metrics
+└── vis.html           # HTML visualization of the saved UAV trajectories
+```
+
+HTML filenames start with `vis_` in the current implementation. Standalone testing saves its outputs under the experiment's `test/` subdirectory.
 
 ## 🏁 Testing
 
-Pass the **experiment directory containing `Models/`**, rather than a `.pt` file, to `--checkpoint`:
+From `source_code`, load the best actor using the experiment directory:
 
 ```bash
-# From source_code; replace the path with your actual experiment directory.
 python main_DPPO.py --test --dataset NCSU --device cuda:0 --checkpoint ../runs/NCSU/EXPERIMENT_DIRECTORY
 ```
 
-Use the same dataset, UAV count, CRGC dimensions, history length, and other architecture settings as training. Consult the saved `params.json`; the testing command does not automatically restore all settings from it. Testing loads `Models/best_actor.pt` and selects each action branch by its highest probability. Results are written under `<checkpoint>/test/`.
+Replace `EXPERIMENT_DIRECTORY` with your saved run folder and use the same dataset and model settings as training. Results are saved to `<checkpoint>/test/`.
 
-RCPE is used only during training; actor evaluation does not require an RCPE checkpoint. The checkpoint entry point loads actor weights, so it should not be treated as an exact resumption of the optimizer, critic, replay buffer, and exploration state.
+## Visualization
 
-To render saved trajectories manually:
+Generate an HTML visualization of the saved UAV trajectories from `source_code`:
 
 ```bash
-python vis.py --output_dir ../runs/NCSU/EXPERIMENT_DIRECTORY --tag train
-python vis.py --output_dir ../runs/NCSU/EXPERIMENT_DIRECTORY/test --tag test
+python tools/post/vis.py --output_dir ../runs/NCSU/EXPERIMENT_DIRECTORY
 ```
 
-The default visualization selects saved best trajectories. Use `--iter <NUMBER>` for a periodically saved trajectory. Metrics and reconstruction accuracy correspond to the available observations; reconstruction MSE is not an evaluation against an independently supplied complete global-state target.
+Example UAV trajectories on the NCSU dataset, with each colored path representing one UAV:
+
+![UAV trajectories on the NCSU dataset](docs/images/uav-trajectories.png)
 
 ## 👏 Reference
 
