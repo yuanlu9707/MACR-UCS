@@ -74,11 +74,11 @@ def create_heatmap_from_saved(poi_trajs, aois, rm, input_args, output_dir, iter,
         #aoimap = np.where(count == 0, 0, aoimap / count)  # 没有人的格子置为0
 
         get_heatmap(snrmap, snrmap_dir + '/step_%03d' % (t) + '.png', min=0, max=5)
-        get_heatmap(txsatismap, txsatismap_dir + '/step_%03d' % (t) + '.png', min=0, max=1)  # 用max是绝对错误的！不同时刻的最大刻度不统一怎么行
-        get_heatmap(txsatismap2, txsatismap2_dir + '/step_%03d' % (t) + '.png', min=0, max=1)  # 用max是绝对错误的！不同时刻的最大刻度不统一怎么行
+        get_heatmap(txsatismap, txsatismap_dir + '/step_%03d' % (t) + '.png', min=0, max=1)
+        get_heatmap(txsatismap2, txsatismap2_dir + '/step_%03d' % (t) + '.png', min=0, max=1)
         get_heatmap(aoisatismap, aoisatismap_dir + '/step_%03d' % (t) + '.png', min=0, max=1)
         aoi_max = 100 if input_args['dataset'] == 'NCSU' else 200
-        get_heatmap(aoimap, aoimap_dir + '/step_%03d' % (t) + '.png', min=0, max=aoi_max)  # # 用max是绝对错误的！不同时刻的最大刻度不统一怎么行
+        get_heatmap(aoimap, aoimap_dir + '/step_%03d' % (t) + '.png', min=0, max=aoi_max)
         print('creating heatmap... {}/{}'.format(t, max_episode_step))
 
 def add_tiles(map):
