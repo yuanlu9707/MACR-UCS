@@ -28,7 +28,7 @@ MACR-UCS/
 
 ## 🔧 Dependencies
 
-The dependency file provides a **suggested compatibility baseline** for Python 3.9 and PyTorch 1.13.1, based on the current imports and APIs. It is not a lockfile exported from a validated experimental environment. A fresh installation and end-to-end training run still need to be verified on your machine.
+The dependency file provides a suggested compatibility baseline for Python 3.8 and PyTorch 1.13.1, based on the current imports and APIs.
 
 ```bash
 git clone https://github.com/yuanlu9707/MACR-UCS.git
