@@ -63,8 +63,7 @@ python main_DPPO.py --dataset roma --device cuda:0 --group roma
 ```
 
 
-
-CRGC and RCPE are both enabled by default in the current configuration. Important settings in [`source_code/get_args.py`](source_code/get_args.py) include:
+Important settings in [`source_code/get_args.py`](source_code/get_args.py) include:
 
 | Parameter | Default | Meaning |
 | --- |-------| --- |
